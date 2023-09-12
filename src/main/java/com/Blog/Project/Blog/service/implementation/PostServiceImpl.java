@@ -29,7 +29,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void editPost(Post post) {
+    public Post editPost(Post post) {
         try {
             Post oldPost = postRepository.getReferenceById(post.getPost_id());
             postRepository.save(post);
@@ -39,6 +39,7 @@ public class PostServiceImpl implements PostService {
             throw new RuntimeException("Please enter valid data.");
         }
 
+        return post;
     }
 
     @Override

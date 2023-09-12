@@ -8,7 +8,9 @@ public interface PostService {
 
     Post addPost(Post post);
     void delPost(int PostID);
-    void editPost(Post post);
+    Post editPost(Post post);
     List<Post> getPosts();
     Post getPost(int PostID);
+
+
 }
