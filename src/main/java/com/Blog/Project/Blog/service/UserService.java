@@ -16,4 +16,8 @@ public interface UserService {
     List<User> getAllUsers();
 
     Optional<User> getUser(Integer id);
+
+    User accept (int p_id, int s_id);
+
+    void reject(int id1, int id2);
 }

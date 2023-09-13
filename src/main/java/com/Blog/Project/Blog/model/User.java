@@ -1,9 +1,18 @@
 package com.Blog.Project.Blog.model;
+import com.Blog.Project.Blog.model.serializer.UserSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -12,6 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -32,5 +42,24 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @ManyToMany
+    @JsonSerialize(using = UserSerializer.class)
+    @JoinTable(
+            name = "friends",
+            joinColumns = @JoinColumn(name = "user_id1"),
+            inverseJoinColumns = @JoinColumn(name = "user_id2"))
+    private Set<User> friends = new HashSet<>();
 
+
+
+//    MessageDigest digest;
+//
+//    {
+//        try {
+//            digest = MessageDigest.getInstance("SHA-256");
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }byte[] encodedhash = digest.digest(
+//            password.getBytes(StandardCharsets.UTF_8));
 }

@@ -68,4 +68,15 @@ public class UserController {
     public Post getPost(@PathVariable Integer id){
         return postService.getPost(id);
     }
+
+    @PostMapping("/accept/{pid}/{sid}")
+    public User accept(@PathVariable("pid") int pid, @PathVariable("sid") int sid){
+        return userService.accept(pid,sid);
+    }
+
+    @DeleteMapping("/reject/{pid}/{sid}")
+    public void reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid){
+        userService.reject(pid, sid);
+    }
+
 }

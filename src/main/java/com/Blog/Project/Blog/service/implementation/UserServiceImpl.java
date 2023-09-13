@@ -43,4 +43,22 @@ public class UserServiceImpl implements UserService {
             return Optional.of(userOpt.get());
         throw new RuntimeException("Id does not exist");
     }
+
+    @Override
+    public User accept(int id1,int id2) {
+        User u1 = userRepository.findById(id1).get();
+        User u2 = userRepository.findById(id2).get();
+        u1.getFriends().add(u2);
+        u2.getFriends().add(u1);
+        return userRepository.save(u1);
+    }
+
+    @Override
+    public void reject(int id1, int id2) {
+        User u1 = userRepository.findById(id1).get();
+        User u2 = userRepository.findById(id2).get();
+        u1.getFriends().remove(u2);
+        u2.getFriends().remove(u1);
+    }
+
 }
