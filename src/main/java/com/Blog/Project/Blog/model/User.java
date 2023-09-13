@@ -40,6 +40,7 @@ public class User {
     @Column(name = "image")
     private String image;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 

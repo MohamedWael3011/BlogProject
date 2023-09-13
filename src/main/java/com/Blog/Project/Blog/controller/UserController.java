@@ -27,101 +27,88 @@ public class UserController {
     CommentService commentService;
 
     @PostMapping("/register")
-    public User register(@RequestBody User u){
-        return userService.register(u);
+    public ResponseEntity<?> register(@RequestBody User u){
+        return  new ResponseEntity<>(userService.register(u),HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public User updateuser(@RequestBody User u){
-        return userService.updateuser(u);
+    public ResponseEntity<?> updateuser(@RequestBody User u){
+        return new ResponseEntity<>(userService.updateuser(u),HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public void deleteuser(@PathVariable Integer id){
-        userService.deleteuser(id);
+    public ResponseEntity<?> deleteuser(@PathVariable Integer id){
+        return  new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/get/all")
-    public List<User> getAllusers(){
-        return userService.getAllUsers();
+    public ResponseEntity<?> getAllusers(){
+        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
     }
 
     @GetMapping("/get/{idUser}")
-    public Optional<User> getUser(@PathVariable("isUser") Integer id){
-        return  userService.getUser(id);
+    public ResponseEntity<?> getUser(@PathVariable("isUser") Integer id){
+        return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 
     @PostMapping("{idUser}/addpost")
-    public Post addPost(@PathVariable("idUser") Integer id,@RequestBody Post p){
-        return postService.addPost(id,p);
+    public ResponseEntity<?> addPost(@PathVariable("idUser") Integer id,@RequestBody Post p) throws GeneralException {
+        return new ResponseEntity<>(postService.addPost(id,p),HttpStatus.OK);
     }
 
     @PutMapping("/updatePost")
-    public Post updatepost(@RequestBody Post p){
-        return postService.editPost(p);
+    public ResponseEntity<?> updatepost(@RequestBody Post p) throws GeneralException {
+        return new ResponseEntity<>(postService.editPost(p),HttpStatus.OK);
     }
 
     @DeleteMapping("/deletePost/{idPost}")
-    public void deletepost(@PathVariable("idPost") Integer id){
+    public ResponseEntity<?> deletepost(@PathVariable("idPost") Integer id){
         postService.delPost(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/share/{idPost}")
-    public Post sharePost(@PathVariable("idPost") Integer postID,@RequestBody Post newPost){
-        return postService.sharePost(postID,newPost);
+    public ResponseEntity<?> sharePost(@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
+        return new ResponseEntity<>(postService.sharePost(postID,newPost),HttpStatus.OK);
     }
 
     @GetMapping("/{idPost}/comments")
-    public List<Comment> getComments(@PathVariable("idPost") Integer id) {
-        return commentService.ListComment(id);
+    public ResponseEntity<?> getComments(@PathVariable("idPost") Integer id) {
+        return new ResponseEntity<>(commentService.ListComment(id),HttpStatus.OK);
     }
 
     @PostMapping("/{idPost}/comments")
-    public Boolean addComment(@PathVariable("idPost") Integer id,@RequestBody Comment comment){
-        return commentService.CreateComment(comment);
+    public ResponseEntity<?> addComment(@PathVariable("idPost") Integer id,@RequestBody Comment comment){
+        return new ResponseEntity<>(commentService.CreateComment(comment),HttpStatus.OK);
     }
 
     @DeleteMapping("/{idPost}/comments/{idComment}")
-    public Boolean delComment(@PathVariable("idPost") Integer pid,@PathVariable("idComment") Integer cid){
-        return commentService.DeleteComment(pid,cid);
+    public ResponseEntity<?> delComment(@PathVariable("idPost") Integer pid,@PathVariable("idComment") Integer cid){
+        return new ResponseEntity<>(commentService.DeleteComment(pid,cid),HttpStatus.OK);
     }
 
     @PutMapping("/{idPost}/comments")
-    public Boolean editComment(@PathVariable("idPost") Integer pid,@RequestBody Comment comment){
-        return commentService.EditComment(pid,comment);
+    public ResponseEntity<?> editComment(@PathVariable("idPost") Integer pid,@RequestBody Comment comment){
+        return new ResponseEntity<>(commentService.EditComment(pid,comment),HttpStatus.OK);
     }
 
     @GetMapping("comments")
-    public List<Comment> getAllComments() {
-        return commentService.ListAllComment();
+    public ResponseEntity<?> getAllComments() {
+        return new ResponseEntity<>(commentService.ListAllComment(),HttpStatus.OK);
     }
 
 
     @DeleteMapping("/reject/{pid}/{sid}")
-    public void reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid) {
+    public ResponseEntity<?> reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid) {
         userService.reject(pid, sid);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/accept/{pid}/{sid}")
-    public User accept(@PathVariable("pid") int pid, @PathVariable("sid") int sid){
-        return userService.accept(pid,sid);
+    public ResponseEntity<?> accept(@PathVariable("pid") int pid, @PathVariable("sid") int sid){
+        return new ResponseEntity<>(userService.accept(pid,sid),HttpStatus.OK);
     }
 
-
-    @GetMapping("1/{id}")
-    public ResponseEntity<?> x(@PathVariable("id") Integer id) {
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
-    }
-
-    @GetMapping("2/{id}")
-    public ResponseEntity<?> y(@PathVariable("id") Integer id) {
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
-    }
-
-    @GetMapping("3/{id}")
-    public ResponseEntity<?> z(@PathVariable("id") Integer id) throws GeneralException {
-        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
-    }
 
 }
 

@@ -4,9 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    INVALID_DIAL_NUMBER("10"),
-    REQUIRED_DIAL_NUMBER("2");
-
+    DO_NOT_EXIST("6");
     private final String code;
     private ErrorCode(String code) {
         this.code = code;
