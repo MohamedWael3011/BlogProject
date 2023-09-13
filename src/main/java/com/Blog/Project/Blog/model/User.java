@@ -1,9 +1,14 @@
 package com.Blog.Project.Blog.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
 
 @Setter
 @Getter
@@ -32,5 +37,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<Post> posts;
 
 }

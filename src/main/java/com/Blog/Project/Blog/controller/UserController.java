@@ -12,41 +12,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping({"/api/users"})
+@RequestMapping({"/api/user"})
 public class UserController {
     @Autowired
     UserService userService;
     @Autowired
     PostService postService;
-
     @PostMapping("/register")
     public User register(@RequestBody User u){
         return userService.register(u);
     }
 
-    @PutMapping("/updateUser")
+    @PutMapping("/update")
     public User updateuser(@RequestBody User u){
         return userService.updateuser(u);
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/delete")
     public void deleteuser(@PathVariable Integer id){
         userService.deleteuser(id);
     }
 
-    @GetMapping("/allUsers")
+    @GetMapping("/get/all")
     public List<User> getAllusers(){
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{idUser}")
-    public Optional<User> getUser(@PathVariable Integer id){
+    @GetMapping("/get/{idUser}")
+    public Optional<User> getUser(@PathVariable("isUser") Integer id){
         return  userService.getUser(id);
     }
 
-    @PostMapping("/addpost")
-    public Post addPost(@RequestBody Post p){
-        return postService.addPost(p);
+    @PostMapping("{idUser}/addpost")
+    public Post addPost(@PathVariable("idUser") Integer id,@RequestBody Post p){
+        return postService.addPost(id,p);
     }
 
     @PutMapping("/updatePost")
@@ -54,18 +53,13 @@ public class UserController {
         return postService.editPost(p);
     }
 
-    @DeleteMapping("/deletePost")
-    public void deletepost(@PathVariable Integer id){
+    @DeleteMapping("/deletePost/{idPost}")
+    public void deletepost(@PathVariable("idPost") Integer id){
         postService.delPost(id);
     }
 
-    @GetMapping("/allPosts")
-    public List<Post> getAllPosts(){
-        return postService.getPosts();
-    }
-
-    @GetMapping("/{idPost}")
-    public Post getPost(@PathVariable Integer id){
-        return postService.getPost(id);
+    @PostMapping("/share/{idPost}")
+    public Post sharePost(@PathVariable("idPost") Integer postID,@RequestBody Post newPost){
+        return postService.sharePost(postID,newPost);
     }
 }
