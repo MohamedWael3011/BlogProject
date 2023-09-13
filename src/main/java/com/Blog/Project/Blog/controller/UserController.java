@@ -1,12 +1,17 @@
 package com.Blog.Project.Blog.controller;
+import com.Blog.Project.Blog.exceptions.GeneralException;
+import com.Blog.Project.Blog.model.Comment;
 import com.Blog.Project.Blog.model.Post;
 import com.Blog.Project.Blog.model.User;
+import com.Blog.Project.Blog.service.CommentService;
 import com.Blog.Project.Blog.service.PostService;
 import com.Blog.Project.Blog.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -92,14 +97,31 @@ public class UserController {
     }
 
 
-}
+    @DeleteMapping("/reject/{pid}/{sid}")
+    public void reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid) {
+        userService.reject(pid, sid);
+    }
 
     @PostMapping("/accept/{pid}/{sid}")
     public User accept(@PathVariable("pid") int pid, @PathVariable("sid") int sid){
         return userService.accept(pid,sid);
     }
 
-    @DeleteMapping("/reject/{pid}/{sid}")
-    public void reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid){
-        userService.reject(pid, sid);
+
+    @GetMapping("1/{id}")
+    public ResponseEntity<?> x(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
     }
+
+    @GetMapping("2/{id}")
+    public ResponseEntity<?> y(@PathVariable("id") Integer id) {
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+    }
+
+    @GetMapping("3/{id}")
+    public ResponseEntity<?> z(@PathVariable("id") Integer id) throws GeneralException {
+        return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
+    }
+
+}
+
