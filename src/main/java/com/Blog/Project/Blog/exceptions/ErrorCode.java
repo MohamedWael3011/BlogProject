@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
+    INVALID_DATA("5"),
     DO_NOT_EXIST("6");
     private final String code;
     private ErrorCode(String code) {

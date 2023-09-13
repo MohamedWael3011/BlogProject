@@ -23,11 +23,10 @@ public class UserSerializer extends StdSerializer<Set<User>> {
     @Override
     public void serialize(Set<User> users, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         List<User> friends = new ArrayList<>();
-//        users.forEach((u) -> {
-//            u.setFriends(null);
-////            System.out.
-////            friends.add(u);
-//        });
+        users.forEach((u) -> {
+            u.setFriends(null);
+//            System.out.friends.add(u);
+        });
 
         jsonGenerator.writeObject(users);
     }
