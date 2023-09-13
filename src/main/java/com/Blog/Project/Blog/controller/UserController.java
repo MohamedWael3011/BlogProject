@@ -1,6 +1,8 @@
 package com.Blog.Project.Blog.controller;
+import com.Blog.Project.Blog.model.Comment;
 import com.Blog.Project.Blog.model.Post;
 import com.Blog.Project.Blog.model.User;
+import com.Blog.Project.Blog.service.CommentService;
 import com.Blog.Project.Blog.service.PostService;
 import com.Blog.Project.Blog.service.UserService;
 
@@ -18,6 +20,9 @@ public class UserController {
     UserService userService;
     @Autowired
     PostService postService;
+    @Autowired
+    CommentService commentService;
+
     @PostMapping("/register")
     public User register(@RequestBody User u){
         return userService.register(u);
@@ -62,4 +67,31 @@ public class UserController {
     public Post sharePost(@PathVariable("idPost") Integer postID,@RequestBody Post newPost){
         return postService.sharePost(postID,newPost);
     }
+
+    @GetMapping("/{idPost}/comments")
+    public List<Comment> getComments(@PathVariable("idPost") Integer id) {
+        return commentService.ListComment(id);
+    }
+
+    @PostMapping("/{idPost}/comments")
+    public Boolean addComment(@PathVariable("idPost") Integer id,@RequestBody Comment comment){
+        return commentService.CreateComment(comment);
+    }
+
+    @DeleteMapping("/{idPost}/comments/{idComment}")
+    public Boolean delComment(@PathVariable("idPost") Integer pid,@PathVariable("idComment") Integer cid){
+        return commentService.DeleteComment(pid,cid);
+    }
+
+    @PutMapping("/{idPost}/comments")
+    public Boolean editComment(@PathVariable("idPost") Integer pid,@RequestBody Comment comment){
+        return commentService.EditComment(pid,comment);
+    }
+
+    @GetMapping("comments")
+    public List<Comment> getAllComments() {
+        return commentService.ListAllComment();
+    }
+
+
 }
