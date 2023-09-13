@@ -6,11 +6,12 @@ import java.util.List;
 
 public interface PostService {
 
-    Post addPost(Post post);
-    void delPost(int PostID);
+    Post addPost(int userID,Post post);
+    void delPost(int postID);
     Post editPost(Post post);
     List<Post> getPosts();
-    Post getPost(int PostID);
+    Post getPost(int postID);
+    Post sharePost(int postID,Post newPost);
 
 
 }

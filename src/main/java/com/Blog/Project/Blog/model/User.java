@@ -14,6 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
 
+import java.util.Set;
+
 @Setter
 @Getter
 @Entity
@@ -21,7 +23,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -50,6 +51,10 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id2"))
     private Set<User> friends = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<Post> posts;
 
 
 //    MessageDigest digest;
