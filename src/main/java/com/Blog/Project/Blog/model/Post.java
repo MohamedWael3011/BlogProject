@@ -1,10 +1,7 @@
 package com.Blog.Project.Blog.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +39,16 @@ public class Post {
     Post sharedPost;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    @JoinColumn(name = "userId")
     private User user;
+
+    @Transient
+    String userFirstName;
+    @Transient
+    String userLastName;
+    @Transient
+    String userImage;
+//    @Transient
+//    int sharedPostID;
 }

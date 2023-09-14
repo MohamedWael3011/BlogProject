@@ -51,25 +51,25 @@ public class UserController {
         return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 
-    @PostMapping("{idUser}/addpost")
+    @PostMapping("{idUser}/add/post")
     public ResponseEntity<?> addPost(@PathVariable("idUser") Integer id,@RequestBody Post p) throws GeneralException {
         return new ResponseEntity<>(postService.addPost(id,p),HttpStatus.OK);
     }
 
-    @PutMapping("/updatePost")
+    @PutMapping("/update/post")
     public ResponseEntity<?> updatepost(@RequestBody Post p) throws GeneralException {
         return new ResponseEntity<>(postService.editPost(p),HttpStatus.OK);
     }
 
-    @DeleteMapping("/deletePost/{idPost}")
+    @DeleteMapping("/delete/post/{idPost}")
     public ResponseEntity<?> deletepost(@PathVariable("idPost") Integer id){
         postService.delPost(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/share/{idPost}")
-    public ResponseEntity<?> sharePost(@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
-        return new ResponseEntity<>(postService.sharePost(postID,newPost),HttpStatus.OK);
+    @PostMapping("{userID}/share/{idPost}")
+    public ResponseEntity<?> sharePost(@PathVariable("userID") Integer userID,@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
+        return new ResponseEntity<>(postService.sharePost(userID,postID,newPost),HttpStatus.OK);
     }
 
     @GetMapping("/{idPost}/comments")

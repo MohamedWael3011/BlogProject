@@ -4,6 +4,7 @@ import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.Post;
 import com.Blog.Project.Blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,10 @@ public class PostController {
         return new ResponseEntity<>( postService.getPost(id), HttpStatus.OK);
     }
 
-
+    @GetMapping("/page/{offset}/{pageSize}")
+    public ResponseEntity<?> getPostWithPage(@PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {
+        Page<Post> posts = postService.getPostsWithPage(offset,pagesize);
+        return new ResponseEntity<>( posts, HttpStatus.OK);
+    }
 
 }
