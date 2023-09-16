@@ -1,5 +1,7 @@
 package com.Blog.Project.Blog.service.implementation;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.Blog.Project.Blog.repository.CommentRepository;
 import com.Blog.Project.Blog.service.CommentService;
@@ -7,7 +9,7 @@ import com.Blog.Project.Blog.model.Comment;
 import java.util.List;
 
 
-//todo Validation and data restrictions
+//todo validation and authorization if any
 @Service
 public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
@@ -49,7 +51,13 @@ public class CommentServiceImpl implements CommentService {
     public List<Comment> ListComment(int post_id){
         return (commentRepository.findByPid(post_id));
     }
+    @Override
     public List<Comment> ListAllComment(){
         return commentRepository.findAll();
+    }
+
+    @Override
+    public Page<Comment> getCommentsWithPage(int pid, int offset, int pageSize) {
+        return commentRepository.findAllByPid(pid,PageRequest.of(offset,pageSize));
     }
 }

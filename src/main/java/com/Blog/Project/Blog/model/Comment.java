@@ -1,5 +1,7 @@
 package com.Blog.Project.Blog.model;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +16,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cid")
     int cid;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "pid")
     int pid;
     @Column(name = "uid")

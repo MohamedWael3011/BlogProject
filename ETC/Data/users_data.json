@@ -1,0 +1,82 @@
+[
+        {
+        "date_of_birth": "2000-02-01",
+        "firstName": "Leanne Graham",
+        "lastName": "Bret",
+        "email": "Sincere@april.biz",
+        "password": "testpassword",
+        "image": null
+        },
+        {
+        "date_of_birth": "2000-01-01",
+        "firstName": "Ervin Howell",
+        "lastName": "Antonette",
+        "email": "Shanna@melissa.tv",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-04-01",
+        "firstName": "Clementine Bauch",
+        "lastName": "Samantha",
+        "email": "Nathan@yesenia.net",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-06-07",
+        "firstName": "Patricia Lebsack",
+        "lastName": "Karianne",
+        "email": "Julianne.OConner@kory.org",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-08-01",
+        "firstName": "Chelsey Dietrich",
+        "lastName": "Kamren",
+        "email": "Lucio_Hettinger@annie.ca",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-12-01",
+        "firstName": "Mrs. Dennis Schulist",
+        "lastName": "Leopoldo_Corkery",
+        "email": "Karley_Dach@jasper.info",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2003-01-01",
+        "firstName": "Kurtis Weissnat",
+        "lastName": "Elwyn.Skiles",
+        "email": "Telly.Hoeger@billy.biz",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2005-02-08",
+        "firstName": "Nicholas Runolfsdottir V",
+        "lastName": "Maxime_Nienow",
+        "email": "Sherwood@rosamond.me",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-01-01",
+        "firstName": "Glenna Reichert",
+        "lastName": "Delphine",
+        "email": "Chaim_McDermott@dana.io",
+        "password": "testpassword",
+		"image": null
+        },
+        {
+        "date_of_birth": "2000-01-01",
+        "firstName": "Clementina DuBuque",
+        "lastName": "Moriah.Stanton",
+        "email": "Rey.Padberg@karina.biz",
+        "password": "testpassword",
+		"image": null
+        }
+]

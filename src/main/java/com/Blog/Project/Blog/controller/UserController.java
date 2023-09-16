@@ -1,21 +1,15 @@
 package com.Blog.Project.Blog.controller;
+
 import com.Blog.Project.Blog.exceptions.GeneralException;
-import com.Blog.Project.Blog.model.Comment;
 import com.Blog.Project.Blog.model.Post;
 import com.Blog.Project.Blog.model.User;
-import com.Blog.Project.Blog.service.CommentService;
 import com.Blog.Project.Blog.service.PostService;
 import com.Blog.Project.Blog.service.UserService;
-
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 @RestController
 @RequestMapping({"/api/user"})
 public class UserController {
@@ -23,8 +17,6 @@ public class UserController {
     UserService userService;
     @Autowired
     PostService postService;
-    @Autowired
-    CommentService commentService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User u){
@@ -71,32 +63,6 @@ public class UserController {
     public ResponseEntity<?> sharePost(@PathVariable("userID") Integer userID,@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
         return new ResponseEntity<>(postService.sharePost(userID,postID,newPost),HttpStatus.OK);
     }
-
-    @GetMapping("/{idPost}/comments")
-    public ResponseEntity<?> getComments(@PathVariable("idPost") Integer id) {
-        return new ResponseEntity<>(commentService.ListComment(id),HttpStatus.OK);
-    }
-
-    @PostMapping("/{idPost}/comments")
-    public ResponseEntity<?> addComment(@PathVariable("idPost") Integer id,@RequestBody Comment comment){
-        return new ResponseEntity<>(commentService.CreateComment(comment),HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{idPost}/comments/{idComment}")
-    public ResponseEntity<?> delComment(@PathVariable("idPost") Integer pid,@PathVariable("idComment") Integer cid){
-        return new ResponseEntity<>(commentService.DeleteComment(pid,cid),HttpStatus.OK);
-    }
-
-    @PutMapping("/{idPost}/comments")
-    public ResponseEntity<?> editComment(@PathVariable("idPost") Integer pid,@RequestBody Comment comment){
-        return new ResponseEntity<>(commentService.EditComment(pid,comment),HttpStatus.OK);
-    }
-
-    @GetMapping("comments")
-    public ResponseEntity<?> getAllComments() {
-        return new ResponseEntity<>(commentService.ListAllComment(),HttpStatus.OK);
-    }
-
 
     @DeleteMapping("/reject/{pid}/{sid}")
     public ResponseEntity<?> reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid) {
