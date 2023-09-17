@@ -1,6 +1,7 @@
 package com.Blog.Project.Blog.model;
 
 
+import com.Blog.Project.Blog.model.Etc.ReactType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,6 +50,12 @@ public class Post {
     String userLastName;
     @Transient
     String userImage;
+    @Transient
+    Integer numberOfReact;
+    @Transient
+    Integer numberOfComments;
+    @Transient
+    ReactType isReact;
 //    @Transient
 //    int sharedPostID;
 }

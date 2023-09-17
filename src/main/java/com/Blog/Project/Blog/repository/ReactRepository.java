@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface ReactRepository extends JpaRepository<React, Rid> {
     int countByRidPidAndType(Integer pid, ReactType type);
+    int countByRidPid(Integer pid);
     List<React> findByRidPid(Integer pid);
     Page<React> findAllByRidPid(Integer pid,Pageable pageable);
 }

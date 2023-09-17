@@ -3,7 +3,10 @@ package com.Blog.Project.Blog.service.implementation;
 import com.Blog.Project.Blog.exceptions.ErrorCode;
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
+import com.Blog.Project.Blog.repository.CommentRepository;
+import com.Blog.Project.Blog.repository.ReactRepository;
 import com.Blog.Project.Blog.repository.UserRepository;
+import com.Blog.Project.Blog.service.ReactService;
 import jakarta.persistence.EntityNotFoundException;
 import com.Blog.Project.Blog.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,12 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private ReactRepository reactRepository;
+    @Autowired
+    private ReactService reactService;
 
     @Override
     public Post addPost(int userID,Post post) throws GeneralException {
@@ -68,12 +77,32 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPosts() {
-        return postRepository.findAll();
+
+        List<Post> posts= postRepository.findAll();
+        posts.forEach(p ->{
+            p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
+            p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
+            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getUserId()));
+            p.setUserFirstName(p.getUser().getFirstName());
+            p.setUserLastName(p.getUser().getLastName());
+            p.setUserImage(p.getUser().getImage());
+
+        });
+
+        return posts;
     }
 
     @Override
     public Page<Post> getPostsWithPage(int offset,int pageSize) {
         Page<Post> posts= postRepository.findAll(PageRequest.of(offset,pageSize));
+        posts.forEach(p ->{
+            p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
+            p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
+            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getUserId()));
+            p.setUserFirstName(p.getUser().getFirstName());
+            p.setUserLastName(p.getUser().getLastName());
+            p.setUserImage(p.getUser().getImage());
+        });
         return posts;
 
     }
@@ -81,9 +110,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPost(int postID) throws GeneralException {
-        return postRepository.findById(postID).orElseThrow(() -> {
+        Post post =  postRepository.findById(postID).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no Post with this ID");
         });
+        post.setNumberOfReact(reactRepository.countByRidPid(post.getPost_id()));
+        post.setNumberOfComments(commentRepository.findByPid(post.getPost_id()).size());
+        post.setIsReact(reactService.getReactStatus(post.getPost_id(),post.getUser().getUserId()));
+        post.setUserFirstName(post.getUser().getFirstName());
+        post.setUserLastName(post.getUser().getLastName());
+        post.setUserImage(post.getUser().getImage());
+        return post;
     }
 
     @Override
@@ -106,6 +142,7 @@ public class PostServiceImpl implements PostService {
         newPost.setUserFirstName(newPost.getUser().getFirstName());
         newPost.setUserLastName(newPost.getUser().getLastName());
         newPost.setUserImage(newPost.getUser().getImage());
+
 //        newPost.setSharedPostID(newPost.getSharedPost().getPost_id());
         postRepository.save(newPost);
         return newPost;
