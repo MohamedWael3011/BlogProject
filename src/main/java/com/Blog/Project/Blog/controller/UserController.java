@@ -32,7 +32,7 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(u,id),HttpStatus.OK);
     }
 
-    @PostMapping("/update_image/{id}")
+    @PutMapping("/update_image/{id}")
     public String updateimage(@PathVariable("id") Integer i,@RequestBody String img) throws GeneralException {
         return userService.update_image(i,img);
     }
@@ -73,17 +73,26 @@ public class UserController {
         return new ResponseEntity<>(postService.sharePost(userID,postID,newPost),HttpStatus.OK);
     }
 
-    @DeleteMapping("/reject/{pid}/{sid}")
-    public ResponseEntity<?> reject(@RequestParam("pid") int pid, @RequestParam("sid") int sid) {
+    @DeleteMapping("/delete-friend")
+    public ResponseEntity<?> reject(@RequestParam("userID") int pid, @RequestParam("friendID") int sid) {
         userService.reject(pid, sid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/accept/{pid}/{sid}")
-    public ResponseEntity<?> accept(@PathVariable("pid") int pid, @PathVariable("sid") int sid){
+    @PostMapping("/add-friend")
+    public ResponseEntity<?> accept(@RequestParam("userID") int pid, @RequestParam("friendID") int sid){
         return new ResponseEntity<>(userService.accept(pid,sid),HttpStatus.OK);
     }
 
 
+    @GetMapping("/get-friends/{idUser}")
+    public ResponseEntity<?> getFriends(@PathVariable("isUser") Integer id) throws GeneralException {
+        return new ResponseEntity<>(userService.getFriends(id),HttpStatus.OK);
+    }
+
+    @GetMapping("/check-friend")
+    public ResponseEntity<?> checkFriend(@RequestParam("userID") int pid, @RequestParam("friendID") int sid) throws GeneralException {
+        return new ResponseEntity<>(userService.checkFriend(pid,sid),HttpStatus.OK);
+    }
 }
 

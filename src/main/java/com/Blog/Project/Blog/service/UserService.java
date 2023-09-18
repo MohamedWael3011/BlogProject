@@ -5,7 +5,7 @@ import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
     User register (User u);
@@ -22,4 +22,6 @@ public interface UserService {
     User accept (int p_id, int s_id);
 
     void reject(int id1, int id2);
+    Set<User> getFriends(int uid) throws GeneralException;
+    Boolean checkFriend(int uid, int fid) throws GeneralException;
 }

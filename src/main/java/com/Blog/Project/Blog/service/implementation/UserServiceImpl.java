@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.Blog.Project.Blog.service.UserService;
 import com.Blog.Project.Blog.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -76,4 +76,16 @@ public class UserServiceImpl implements UserService {
         u2.getFriends().remove(u1);
     }
 
+    @Override
+    public Set<User> getFriends(int uid) throws GeneralException {
+        User u = getUser(uid);
+        return u.getFriends();
+    }
+
+    @Override
+    public Boolean checkFriend(int uid, int fid) throws GeneralException {
+        User a = getUser(uid);
+        User b = getUser(fid);
+        return a.getFriends().contains(b);
+    }
 }

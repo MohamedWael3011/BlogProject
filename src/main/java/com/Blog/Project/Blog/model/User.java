@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import java.util.Set;
 
@@ -62,7 +62,7 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private Set<Post> posts;
+    private List<Post> posts;
 
 
 }
