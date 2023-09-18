@@ -18,14 +18,23 @@ public class UserController {
     @Autowired
     PostService postService;
 
-    @PostMapping("/register")
+    @PostMapping("/add-user")
     public ResponseEntity<?> register(@RequestBody User u){
         return  new ResponseEntity<>(userService.register(u),HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateuser(@RequestBody User u){
-        return new ResponseEntity<>(userService.updateuser(u),HttpStatus.OK);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Integer id){
+        return  new ResponseEntity<>(userService.login(id),HttpStatus.OK);
+    }
+    @PutMapping("/update-user/{id}")
+    public ResponseEntity<?> updateuser(@RequestBody User u,@PathVariable("id") Integer id) throws GeneralException {
+        return new ResponseEntity<>(userService.updateUser(u,id),HttpStatus.OK);
+    }
+
+    @PostMapping("/update_image/{id}")
+    public String updateimage(@PathVariable("id") Integer i,@RequestBody String img) throws GeneralException {
+        return userService.update_image(i,img);
     }
 
     @DeleteMapping("/delete")
@@ -33,13 +42,13 @@ public class UserController {
         return  new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/get/all")
+    @GetMapping("/get-user/all")
     public ResponseEntity<?> getAllusers(){
         return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
     }
 
-    @GetMapping("/get/{idUser}")
-    public ResponseEntity<?> getUser(@PathVariable("isUser") Integer id){
+    @GetMapping("/get-user/{idUser}")
+    public ResponseEntity<?> getUser(@PathVariable("isUser") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 

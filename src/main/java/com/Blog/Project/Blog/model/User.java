@@ -26,23 +26,30 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int userId;
+    private int id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "username")
+    private String name;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "image")
-    private String image;
-
-    @JsonIgnore
     @Column(name = "password")
     private String password;
+
+    @Column(name = "image")
+    private String pic;
+
+    @Column(name = "bio")
+    private String bio;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "facebook_username")
+    private String facebookUsername;
+
+
 
     @ManyToMany
     @JsonSerialize(using = UserSerializer.class)
@@ -58,14 +65,4 @@ public class User {
     private Set<Post> posts;
 
 
-//    MessageDigest digest;
-//
-//    {
-//        try {
-//            digest = MessageDigest.getInstance("SHA-256");
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }byte[] encodedhash = digest.digest(
-//            password.getBytes(StandardCharsets.UTF_8));
 }

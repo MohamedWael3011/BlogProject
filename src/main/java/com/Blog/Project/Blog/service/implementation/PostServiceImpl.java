@@ -41,9 +41,8 @@ public class PostServiceImpl implements PostService {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
         });
         post.setUser(user);
-        post.setUserFirstName(post.getUser().getFirstName());
-        post.setUserLastName(post.getUser().getLastName());
-        post.setUserImage(post.getUser().getImage());
+        post.setUserFirstName(post.getUser().getName());
+        post.setUserImage(post.getUser().getName());
         return postRepository.save(post);
     }
 
@@ -82,10 +81,9 @@ public class PostServiceImpl implements PostService {
         posts.forEach(p ->{
             p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
             p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
-            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getUserId()));
-            p.setUserFirstName(p.getUser().getFirstName());
-            p.setUserLastName(p.getUser().getLastName());
-            p.setUserImage(p.getUser().getImage());
+            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getId()));
+            p.setUserFirstName(p.getUser().getName());
+            p.setUserImage(p.getUser().getPic());
 
         });
 
@@ -98,10 +96,9 @@ public class PostServiceImpl implements PostService {
         posts.forEach(p ->{
             p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
             p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
-            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getUserId()));
-            p.setUserFirstName(p.getUser().getFirstName());
-            p.setUserLastName(p.getUser().getLastName());
-            p.setUserImage(p.getUser().getImage());
+            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getId()));
+            p.setUserFirstName(p.getUser().getName());
+            p.setUserImage(p.getUser().getPic());
         });
         return posts;
 
@@ -115,10 +112,9 @@ public class PostServiceImpl implements PostService {
         });
         post.setNumberOfReact(reactRepository.countByRidPid(post.getPost_id()));
         post.setNumberOfComments(commentRepository.findByPid(post.getPost_id()).size());
-        post.setIsReact(reactService.getReactStatus(post.getPost_id(),post.getUser().getUserId()));
-        post.setUserFirstName(post.getUser().getFirstName());
-        post.setUserLastName(post.getUser().getLastName());
-        post.setUserImage(post.getUser().getImage());
+        post.setIsReact(reactService.getReactStatus(post.getPost_id(),post.getUser().getId()));
+        post.setUserFirstName(post.getUser().getName());
+        post.setUserImage(post.getUser().getPic());
         return post;
     }
 
@@ -139,9 +135,8 @@ public class PostServiceImpl implements PostService {
             newPost.setSharedPost(targetPost.getSharedPost());
         }
         newPost.setUser(user);
-        newPost.setUserFirstName(newPost.getUser().getFirstName());
-        newPost.setUserLastName(newPost.getUser().getLastName());
-        newPost.setUserImage(newPost.getUser().getImage());
+        newPost.setUserFirstName(newPost.getUser().getName());
+        newPost.setUserImage(newPost.getUser().getPic());
 
 //        newPost.setSharedPostID(newPost.getSharedPost().getPost_id());
         postRepository.save(newPost);

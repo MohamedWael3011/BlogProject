@@ -1,5 +1,7 @@
 package com.Blog.Project.Blog.service.implementation;
 
+import com.Blog.Project.Blog.exceptions.ErrorCode;
+import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,16 +21,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(u);
     }
 
-
+    @Override
+    public User login(Integer id) {
+        return userRepository.getReferenceById(id);
+    }
 
     @Override
-    public void deleteuser(Integer id) {
+    public String update_image(Integer id,String img) throws GeneralException {
+        User user = getUser(id);
+        user.setPic(img);
+        userRepository.save(user);
+        return user.getPic();
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public User updateuser(User u) {
-        return userRepository.save(u);
+    public User updateUser(User u,int id) throws GeneralException {
+        User user = getUser(id);
+        user.setId(id);
+        return userRepository.saveAndFlush(user);
     }
 
     @Override
@@ -37,11 +52,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUser(Integer id) {
-        Optional<User> userOpt =  userRepository.findById(id);
-        if(userOpt.isPresent())
-            return Optional.of(userOpt.get());
-        throw new RuntimeException("Id does not exist");
+    public User getUser(Integer id) throws GeneralException {
+        User user =  userRepository.findById(id).orElseThrow(() -> {
+            return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
+        });
+        return  user;
     }
 
     @Override
