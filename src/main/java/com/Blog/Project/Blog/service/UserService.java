@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface UserService {
     User register (User u);
-    User login(Integer id);
+    User login(User u) throws GeneralException;
     String update_image(Integer id, String img) throws GeneralException;
     void deleteUser(Integer id);
 
@@ -23,5 +23,5 @@ public interface UserService {
 
     void reject(int id1, int id2);
     Set<User> getFriends(int uid) throws GeneralException;
-    Boolean checkFriend(int uid, int fid) throws GeneralException;
+    boolean checkFriend(int uid, int fid) throws GeneralException;
 }

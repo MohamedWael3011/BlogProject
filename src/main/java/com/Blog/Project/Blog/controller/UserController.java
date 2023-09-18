@@ -24,8 +24,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Integer id){
-        return  new ResponseEntity<>(userService.login(id),HttpStatus.OK);
+    public ResponseEntity<?> login(@RequestBody User user) throws GeneralException {
+        return  new ResponseEntity<>(userService.login(user),HttpStatus.OK);
     }
     @PutMapping("/update-user/{id}")
     public ResponseEntity<?> updateuser(@RequestBody User u,@PathVariable("id") Integer id) throws GeneralException {
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/get-user/{idUser}")
-    public ResponseEntity<?> getUser(@PathVariable("isUser") Integer id) throws GeneralException {
+    public ResponseEntity<?> getUser(@PathVariable("idUser") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 
@@ -86,12 +86,12 @@ public class UserController {
 
 
     @GetMapping("/get-friends/{idUser}")
-    public ResponseEntity<?> getFriends(@PathVariable("isUser") Integer id) throws GeneralException {
+    public ResponseEntity<?> getFriends(@PathVariable("idUser") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.getFriends(id),HttpStatus.OK);
     }
 
-    @GetMapping("/check-friend")
-    public ResponseEntity<?> checkFriend(@RequestParam("userID") int pid, @RequestParam("friendID") int sid) throws GeneralException {
+    @PutMapping("/check-friend")
+    public ResponseEntity<?> checkFriend(@RequestParam("userId") int pid, @RequestParam("friendId") int sid) throws GeneralException {
         return new ResponseEntity<>(userService.checkFriend(pid,sid),HttpStatus.OK);
     }
 }

@@ -22,8 +22,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(Integer id) {
-        return userRepository.getReferenceById(id);
+    public User login(User u) throws GeneralException {
+        User valid = userRepository.findByEmailAndPassword(u.getEmail(),u.getPassword()).orElseThrow(() -> {
+            return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
+        });
+        return userRepository.getReferenceById(valid.getId());
     }
 
     @Override
@@ -42,8 +45,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User u,int id) throws GeneralException {
         User user = getUser(id);
-        user.setId(id);
-        return userRepository.saveAndFlush(user);
+        u.setId(id);
+        return userRepository.saveAndFlush(u);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean checkFriend(int uid, int fid) throws GeneralException {
+    public boolean checkFriend(int uid, int fid) throws GeneralException {
         User a = getUser(uid);
         User b = getUser(fid);
         return a.getFriends().contains(b);
