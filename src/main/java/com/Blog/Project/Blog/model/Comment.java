@@ -1,9 +1,11 @@
 package com.Blog.Project.Blog.model;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "comments")
@@ -14,13 +16,15 @@ import lombok.*;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "cid")
     int cid;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "pid")
-    int pid;
+    int postId;
     @Column(name = "uid")
-    int uid;
+    int userId;
     @Column(name = "content")
     String content;
+    @Column(name = "create_time")
+    Date commentDate;
 }
