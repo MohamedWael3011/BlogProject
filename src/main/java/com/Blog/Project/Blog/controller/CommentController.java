@@ -52,17 +52,17 @@ public class CommentController {
         return res;
     }
 
-    @GetMapping("all-comment/all")
-    public GeneralResponse<List<Comment>> getAllComments() {
-        GeneralResponse<List<Comment>> res = new GeneralResponse<List<Comment>>();
-        res.setData(commentService.ListAllComment());
-        res.setSuccess(true);
-        return res;
-    }
+//    @GetMapping("all-comment/all")
+//    public GeneralResponse<List<Comment>> getAllComments() {
+//        GeneralResponse<List<Comment>> res = new GeneralResponse<List<Comment>>();
+//        res.setData(commentService.ListAllComment());
+//        res.setSuccess(true);
+//        return res;
+//    }
 
-    @GetMapping("all-comment/{idPost}/{offset}/{pageSize}")
-    public ResponseEntity<?> getCommentsWithPage(@PathVariable("idPost") Integer pid, @PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {
-        Page<Comment> comments = commentService.getCommentsWithPage(pid,offset,pagesize);
-        return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
+//    @GetMapping("all-comment/{idPost}/{offset}/{pageSize}")
+//    public ResponseEntity<?> getCommentsWithPage(@PathVariable("idPost") Integer pid, @PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {
+//        Page<Comment> comments = commentService.getCommentsWithPage(pid,offset,pagesize);
+//        return new ResponseEntity<>(comments, HttpStatus.OK);
+//    }
 }

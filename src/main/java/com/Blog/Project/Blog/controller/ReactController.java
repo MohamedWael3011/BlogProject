@@ -1,13 +1,11 @@
 package com.Blog.Project.Blog.controller;
 
 import com.Blog.Project.Blog.exceptions.GeneralException;
-import com.Blog.Project.Blog.model.CompositeKeys.Rid;
 import com.Blog.Project.Blog.model.React;
 import com.Blog.Project.Blog.model.ReturnModels.ReactCount;
 import com.Blog.Project.Blog.response.GeneralResponse;
 import com.Blog.Project.Blog.service.ReactService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,17 +34,17 @@ public class ReactController {
     }
 
     @PostMapping("add-react/{uid}")
-    public GeneralResponse<?> addReact(@RequestBody React react){
+    public GeneralResponse<?> addReact(@RequestBody React react,@PathVariable("uid") Integer uid){
         GeneralResponse<React> res = new GeneralResponse<>();
-        res.setData(reactService.addReact(react));
+        res.setData(reactService.addReact(uid,react));
         res.setSuccess(true);
         return res;
     }
 
-    @PutMapping("update-react/{uid}")
-    public GeneralResponse<?> editReact(@RequestBody React react) throws GeneralException {
+    @PutMapping("update-react/{pid}/{uid}")
+    public GeneralResponse<?> editReact(@RequestBody React react,@PathVariable("pid") Integer pid,@PathVariable("uid") Integer uid) throws GeneralException {
         GeneralResponse<React> res = new GeneralResponse<>();
-        res.setData(reactService.editReact(react));
+        res.setData(reactService.editReact(react,pid,uid));
         res.setSuccess(true);
         return res;
     }
@@ -54,17 +52,17 @@ public class ReactController {
     @DeleteMapping("delete-react/{pid}/{uid}")
     public GeneralResponse<?> delReact(@PathVariable("pid") Integer pid, @PathVariable("uid") Integer uid){
         GeneralResponse<React> res = new GeneralResponse<>();
-        reactService.delReact(new Rid(pid,uid));
+        reactService.delReact(pid,uid);
         res.setSuccess(true);
         res.setMessage("React has been deleted");
         return res;
     }
 
-    @GetMapping("all-react/{pid}/{offset}/{pageSize}")
-    public ResponseEntity<?> getReactsWithPage(@PathVariable("pid") Integer pid, @PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {
-        Page<React> reacts = reactService.getReactsWithPage(pid,offset,pagesize);
-        return new ResponseEntity<>(reacts, HttpStatus.OK);
-    }
+//    @GetMapping("all-react/{pid}/{offset}/{pageSize}")
+//    public ResponseEntity<?> getReactsWithPage(@PathVariable("pid") Integer pid, @PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {
+//        Page<React> reacts = reactService.getReactsWithPage(pid,offset,pagesize);
+//        return new ResponseEntity<>(reacts, HttpStatus.OK);
+//    }
 
     @GetMapping("react-status/{pid}/{uid}")
     public ResponseEntity<?> getReactsStatus(@PathVariable("pid") Integer pid, @PathVariable("uid") Integer uid){

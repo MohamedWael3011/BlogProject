@@ -9,10 +9,8 @@ import com.Blog.Project.Blog.repository.ReactRepository;
 import com.Blog.Project.Blog.service.ReactService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import com.Blog.Project.Blog.model.CompositeKeys.Rid;
+
 import java.util.List;
 
 //todo validation and authorization if any
@@ -22,9 +20,9 @@ public class ReactsServiceImpl implements ReactService {
     ReactRepository reactRepository;
     @Override
     public ReactCount getReactCount(int pid){
-        return new ReactCount(reactRepository.countByRidPidAndType(pid, ReactType.valueOf("LIKE")),
-                reactRepository.countByRidPidAndType(pid, ReactType.valueOf("LOVE")),
-                reactRepository.countByRidPidAndType(pid, ReactType.valueOf("HATE")));
+        return new ReactCount(reactRepository.countByPidAndType(pid, ReactType.valueOf("LIKE")),
+                reactRepository.countByPidAndType(pid, ReactType.valueOf("LOVE")),
+                reactRepository.countByPidAndType(pid, ReactType.valueOf("HATE")));
     }
     @Override
     public List<React> listReacts(int pid){
@@ -33,24 +31,27 @@ public class ReactsServiceImpl implements ReactService {
     }
 
     private List<React> listReacts(int pid,int uid){
-        return reactRepository.findByRidPid(pid);
+        return reactRepository.findByPid(pid);
 
     }
 
     @Override
-    public React addReact(React react){
+    public React addReact(int uid,React react){
+        react.setUid(uid);
         return reactRepository.save(react);
     }
 
     @Override
-    public void delReact(Rid rid){
-        reactRepository.deleteById(rid);
+    public void delReact(int uid,int pid){
+        reactRepository.deleteById(new React.CompositeKey(uid,pid));
     }
     @Override
-    public React editReact(React react) throws GeneralException {
+    public React editReact(React react,int pid,int uid) throws GeneralException {
         try {
-            React oldReact = reactRepository.getReferenceById(react.getRid());
-            reactRepository.save(react);
+            React oldReact = reactRepository.getReferenceByUidAndPid(uid, pid);
+            react.setUid(uid);
+            react.setPid(pid);
+            reactRepository.saveAndFlush(react);
         } catch (EntityNotFoundException var4) {
             throw new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no React with that ID");
         } catch (Exception var5) {
@@ -58,15 +59,15 @@ public class ReactsServiceImpl implements ReactService {
         }
         return react;
     }
-    @Override
-    public Page<React> getReactsWithPage(int pid,int offset, int pageSize) {
-        Page<React> reacts = reactRepository.findAllByRidPid(pid,PageRequest.of(offset,pageSize));
-        return reacts;
-    }
+//    @Override
+//    public Page<React> getReactsWithPage(int pid,int offset, int pageSize) {
+//        Page<React> reacts = reactRepository.findAllByRidPid(pid,PageRequest.of(offset,pageSize));
+//        return reacts;
+//    }
 
     @Override
     public ReactType getReactStatus(int pid,int uid){
-        React react = reactRepository.findById(new Rid(uid,pid)).orElse(new React());
+        React react = reactRepository.findByUidAndPid(uid,pid);
         return react.getType();
     }
 

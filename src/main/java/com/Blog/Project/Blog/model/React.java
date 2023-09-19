@@ -1,12 +1,13 @@
 package com.Blog.Project.Blog.model;
 
-import com.Blog.Project.Blog.model.CompositeKeys.Rid;
 import com.Blog.Project.Blog.model.Etc.ReactType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 
 @Entity
@@ -16,18 +17,44 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "reacts")
 //@IdClass(Rid.class)
+@IdClass(React.CompositeKey.class)
 public class React {
-    @EmbeddedId
-    private Rid rid;
+    @Id
+    private int pid;
+    @Id
+    private int uid;
 
-    @AttributeOverrides({
-            @AttributeOverride(name="uid",
-                    column = @Column(name="uid")),
-            @AttributeOverride(name="pid",
-                    column = @Column(name="pid"))
-    })
 
-        @Enumerated(EnumType.ORDINAL)
-        @Column(name = "type")
-        private ReactType type=ReactType.NONE;
-}
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "type")
+    private ReactType type=ReactType.NONE;
+
+    public static class CompositeKey implements Serializable {
+        public int getPid() {
+            return pid;
+        }
+
+        public void setPid(int pid) {
+            this.pid = pid;
+        }
+
+        public int getUid() {
+            return uid;
+        }
+
+        public void setUid(int uid) {
+            this.uid = uid;
+        }
+
+        private int pid;
+        private int uid;
+
+        public CompositeKey(final int pid,final int uid) {
+            this.pid = pid;
+            this.uid = uid;
+        }
+
+        public CompositeKey() {
+        }
+    }
+    }

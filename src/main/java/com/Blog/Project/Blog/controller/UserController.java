@@ -23,21 +23,21 @@ public class UserController {
     @Autowired
     PostService postService;
 
-    @PostMapping("/add-user")
+    @PostMapping("/user/add-user")
     public ResponseEntity<?> register(@RequestBody User u){
         return  new ResponseEntity<>(userService.register(u),HttpStatus.OK);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody User user) throws GeneralException {
         return  new ResponseEntity<>(userService.login(user),HttpStatus.OK);
     }
-    @PutMapping("/update-user/{id}")
+    @PutMapping("/user/update-user/{id}")
     public ResponseEntity<?> updateuser(@RequestBody User u,@PathVariable("id") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.updateUser(u,id),HttpStatus.OK);
     }
 
-    @PutMapping("/update_image/{id}")
+    @PutMapping("/user/upload-image/{id}")
     public Object updateimage(@PathVariable("id") Integer i,@RequestBody HashMap<String, String> img) throws GeneralException {
         HashMap<String,String> image = new HashMap<>();
         image.put("img", userService.update_image(i,img.get("img")));
@@ -49,12 +49,12 @@ public class UserController {
         return  new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/get-user/all")
+    @GetMapping("/user/get-user/all")
     public ResponseEntity<?> getAllusers(){
         return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
     }
 
-    @GetMapping("/get-user/{idUser}")
+    @GetMapping("/user/get-user/{idUser}")
     public ResponseEntity<?> getUser(@PathVariable("idUser") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
@@ -97,24 +97,24 @@ public class UserController {
         return res;
     }
 
-    @DeleteMapping("/delete-friend")
-    public ResponseEntity<?> reject(@RequestParam("userID") int pid, @RequestParam("friendID") int sid) {
+    @DeleteMapping("/user/delete-friend")
+    public ResponseEntity<?> reject(@RequestParam("userId") int pid, @RequestParam("friendId") int sid) {
         userService.reject(pid, sid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/add-friend")
-    public ResponseEntity<?> accept(@RequestParam("userID") int pid, @RequestParam("friendID") int sid){
+    @PostMapping("/user/add-friend")
+    public ResponseEntity<?> accept(@RequestParam("userId") int pid, @RequestParam("friendId") int sid){
         return new ResponseEntity<>(userService.accept(pid,sid),HttpStatus.OK);
     }
 
 
-    @GetMapping("/get-friends/{idUser}")
+    @GetMapping("/user/get-friends/{idUser}")
     public ResponseEntity<?> getFriends(@PathVariable("idUser") Integer id) throws GeneralException {
         return new ResponseEntity<>(userService.getFriends(id),HttpStatus.OK);
     }
 
-    @PutMapping("/check-friend")
+    @PutMapping("/user/check-friend")
     public ResponseEntity<?> checkFriend(@RequestParam("userId") int pid, @RequestParam("friendId") int sid) throws GeneralException {
         return new ResponseEntity<>(userService.checkFriend(pid,sid),HttpStatus.OK);
     }

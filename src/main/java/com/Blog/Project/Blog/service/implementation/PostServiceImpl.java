@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
 
         List<Post> posts= postRepository.findAll();
         posts.forEach(p ->{
-            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfReacts(reactRepository.countByPid(p.getId()));
             p.setNumberOfComments(commentRepository.findByPostId(p.getId()).size());
             p.setIsReact(reactService.getReactStatus(p.getId(),p.getUser().getId()));
             p.setImage(HelperFunctions.getBase64(p.getId(), "posts"));
@@ -114,7 +114,7 @@ public class PostServiceImpl implements PostService {
     public Page<Post> getPostsWithPage(int offset,int pageSize) {
         Page<Post> posts= postRepository.findAll(PageRequest.of(offset,pageSize));
         posts.forEach(p ->{
-            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfReacts(reactRepository.countByPid(p.getId()));
             p.setNumberOfComments(commentRepository.findByPostId(p.getId()).size());
             p.setIsReact(reactService.getReactStatus(p.getId(),p.getUser().getId()));
 //            p.setUserFirstName(p.getUser().getName());
@@ -130,7 +130,7 @@ public class PostServiceImpl implements PostService {
         Post post =  postRepository.findById(posterID).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no Post with this ID");
         });
-        post.setNumberOfReacts(reactRepository.countByRidPid(post.getId()));
+        post.setNumberOfReacts(reactRepository.countByPid(post.getId()));
         post.setNumberOfComments(commentRepository.findByPostId(post.getId()).size());
         post.setIsReact(reactService.getReactStatus(post.getId(),loggedUser));
         post.setImage(HelperFunctions.getBase64(post.getId(), "posts"));
@@ -176,7 +176,7 @@ public class PostServiceImpl implements PostService {
 
         List<Post> posts= postRepository.findByUserID(posterID);
         posts.forEach(p ->{
-            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfReacts(reactRepository.countByPid(p.getId()));
             p.setNumberOfComments(commentRepository.findByPostId(p.getId()).size());
             p.setIsReact(reactService.getReactStatus(p.getId(),loggedUser));
             p.setImage(HelperFunctions.getBase64(p.getId(), "posts"));
