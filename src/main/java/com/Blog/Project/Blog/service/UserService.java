@@ -16,7 +16,6 @@ public interface UserService {
     User updateUser(User u,int id) throws GeneralException;
 
     List<User> getAllUsers();
-
     User getUser(Integer id) throws GeneralException;
 
     User accept (int p_id, int s_id);

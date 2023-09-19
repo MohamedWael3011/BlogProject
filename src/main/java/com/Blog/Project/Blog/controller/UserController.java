@@ -1,8 +1,10 @@
 package com.Blog.Project.Blog.controller;
 
+import com.Blog.Project.Blog.Helpers.HelperFunctions;
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.Post;
 import com.Blog.Project.Blog.model.User;
+import com.Blog.Project.Blog.response.GeneralResponse;
 import com.Blog.Project.Blog.service.PostService;
 import com.Blog.Project.Blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 @RestController
-@RequestMapping({"/api/user"})
+@RequestMapping({"/api"})
 public class UserController {
     @Autowired
     UserService userService;
@@ -33,8 +38,10 @@ public class UserController {
     }
 
     @PutMapping("/update_image/{id}")
-    public String updateimage(@PathVariable("id") Integer i,@RequestBody String img) throws GeneralException {
-        return userService.update_image(i,img);
+    public Object updateimage(@PathVariable("id") Integer i,@RequestBody HashMap<String, String> img) throws GeneralException {
+        HashMap<String,String> image = new HashMap<>();
+        image.put("img", userService.update_image(i,img.get("img")));
+        return image;
     }
 
     @DeleteMapping("/delete")
@@ -52,25 +59,42 @@ public class UserController {
         return new ResponseEntity<>(userService.getUser(id),HttpStatus.OK);
     }
 
-    @PostMapping("{idUser}/add/post")
-    public ResponseEntity<?> addPost(@PathVariable("idUser") Integer id,@RequestBody Post p) throws GeneralException {
-        return new ResponseEntity<>(postService.addPost(id,p),HttpStatus.OK);
+    @PostMapping("add-post/{userId}")
+    public GeneralResponse<?> addPost(@PathVariable("userId") Integer id, @RequestBody Post p) throws GeneralException {
+        GeneralResponse<Post> res = new GeneralResponse<>();
+        Post post = postService.addPost(id,p);
+        post.setImage(HelperFunctions.getBase64(post.getId(), "posts"));
+        post.getUser().setPic(HelperFunctions.getBase64(post.getUser().getId(),"users"));
+        res.setData(post);
+        res.setSuccess(true);
+        return res;
     }
 
-    @PutMapping("/update/post")
-    public ResponseEntity<?> updatepost(@RequestBody Post p) throws GeneralException {
-        return new ResponseEntity<>(postService.editPost(p),HttpStatus.OK);
+    @PutMapping("/update-post/{postID}/{userID}")
+    public GeneralResponse<?> updatepost(@PathVariable("postID") Integer postID,@PathVariable("userID") Integer userID, @RequestBody Post p) throws GeneralException {
+        GeneralResponse<Post> res = new GeneralResponse<>();
+        res.setData(postService.editPost(postID,p,userID));
+        return res;
     }
 
-    @DeleteMapping("/delete/post/{idPost}")
-    public ResponseEntity<?> deletepost(@PathVariable("idPost") Integer id){
-        postService.delPost(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/delete-post/{postId}/{userID}")
+    public GeneralResponse<?> deletepost(@PathVariable("postId") Integer id,@PathVariable("userID") Integer userID) throws GeneralException {
+        postService.delPost(id,userID);
+        GeneralResponse<Post> res = new GeneralResponse<>();
+        res.setSuccess(true);
+        res.setMessage("Post has been deleted");
+        return res;
     }
 
-    @PostMapping("{userID}/share/{idPost}")
-    public ResponseEntity<?> sharePost(@PathVariable("userID") Integer userID,@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
-        return new ResponseEntity<>(postService.sharePost(userID,postID,newPost),HttpStatus.OK);
+    @PostMapping("/share-post/{idPost}/{userID}")
+    public GeneralResponse<?> sharePost(@PathVariable("userID") Integer userID,@PathVariable("idPost") Integer postID,@RequestBody Post newPost) throws GeneralException {
+        GeneralResponse<Post> res = new GeneralResponse<>();
+        Post post = postService.sharePost(userID,postID,newPost);
+        post.setImage(HelperFunctions.getBase64(post.getId(), "posts"));
+        post.getUser().setPic(HelperFunctions.getBase64(post.getUser().getId(),"users"));
+        res.setData(post);
+        res.setSuccess(true);
+        return res;
     }
 
     @DeleteMapping("/delete-friend")

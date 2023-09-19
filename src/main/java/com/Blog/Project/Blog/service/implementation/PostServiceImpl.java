@@ -1,5 +1,6 @@
 package com.Blog.Project.Blog.service.implementation;
 
+import com.Blog.Project.Blog.Helpers.HelperFunctions;
 import com.Blog.Project.Blog.exceptions.ErrorCode;
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
@@ -36,23 +37,37 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post addPost(int userID,Post post) throws GeneralException {
-        post.setCreate_time(Date.from(Instant.now()));
+        post.setCreate_at(Date.from(Instant.now()));
         User user = userRepository.findById(userID).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
         });
         post.setUser(user);
-        post.setUserFirstName(post.getUser().getName());
-        post.setUserImage(post.getUser().getName());
-        return postRepository.save(post);
+        String img = post.getImage();
+        post.setImage("");
+        post = postRepository.save(post);
+
+        post.setImage(HelperFunctions.setBase64(post.getId(), img,"posts"));
+
+        postRepository.save(post);
+//        post.setUserFirstName(post.getUser().getName());
+//        post.setUserImage(post.getUser().getName());
+        post.setImage(img);
+        return post;
     }
 
     @Override
-    public void delPost(int postID) {
+    public void delPost(int postID,int userID) throws GeneralException {
+        Post post = postRepository.findById(postID).orElseThrow(() -> {
+            return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
+        });
+        if (post.getUser().getId() != userID){
+            throw new GeneralException(ErrorCode.DO_NOT_EXIST,"You cannot delete this post");
+        }
         // Check first if its shared before
         List<Post> childPosts = postRepository.findAllSharedPosts(postID);
         if (!childPosts.isEmpty()){
             childPosts.forEach(p ->{
-                postRepository.deleteById(p.getPost_id());
+                postRepository.deleteById(p.getId());
             });
         }
 
@@ -61,9 +76,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Post post) throws GeneralException {
+    public Post editPost(int postId,Post post,int userID) throws GeneralException {
         try {
-            Post oldPost = postRepository.getReferenceById(post.getPost_id());
+            Post oldPost = postRepository.getReferenceById(post.getId());
+            if(oldPost.getUser().getId() != userID) {
+                throw new GeneralException(ErrorCode.DO_NOT_EXIST, "You cannot edit a post that is not done by you");
+            }
             postRepository.save(post);
         } catch (EntityNotFoundException var4) {
             throw new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no Post with that ID");
@@ -75,15 +93,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getPosts() {
+    public List<Post> getPosts(int loggedUser) {
 
         List<Post> posts= postRepository.findAll();
         posts.forEach(p ->{
-            p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
-            p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
-            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getId()));
-            p.setUserFirstName(p.getUser().getName());
-            p.setUserImage(p.getUser().getPic());
+            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfComments(commentRepository.findByPid(p.getId()).size());
+            p.setIsReact(reactService.getReactStatus(p.getId(),p.getUser().getId()));
+            p.setImage(HelperFunctions.getBase64(p.getId(), "posts"));
+            p.getUser().setPic(HelperFunctions.getBase64(p.getUser().getId(),"users"));
+//            p.setUserFirstName(p.getUser().getName());
+//            p.setUserImage(p.getUser().getPic());
 
         });
 
@@ -94,11 +114,11 @@ public class PostServiceImpl implements PostService {
     public Page<Post> getPostsWithPage(int offset,int pageSize) {
         Page<Post> posts= postRepository.findAll(PageRequest.of(offset,pageSize));
         posts.forEach(p ->{
-            p.setNumberOfReact(reactRepository.countByRidPid(p.getPost_id()));
-            p.setNumberOfComments(commentRepository.findByPid(p.getPost_id()).size());
-            p.setIsReact(reactService.getReactStatus(p.getPost_id(),p.getUser().getId()));
-            p.setUserFirstName(p.getUser().getName());
-            p.setUserImage(p.getUser().getPic());
+            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfComments(commentRepository.findByPid(p.getId()).size());
+            p.setIsReact(reactService.getReactStatus(p.getId(),p.getUser().getId()));
+//            p.setUserFirstName(p.getUser().getName());
+//            p.setUserImage(p.getUser().getPic());
         });
         return posts;
 
@@ -106,15 +126,17 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public Post getPost(int postID) throws GeneralException {
-        Post post =  postRepository.findById(postID).orElseThrow(() -> {
+    public Post getPost(int posterID,int loggedUser) throws GeneralException {
+        Post post =  postRepository.findById(posterID).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no Post with this ID");
         });
-        post.setNumberOfReact(reactRepository.countByRidPid(post.getPost_id()));
-        post.setNumberOfComments(commentRepository.findByPid(post.getPost_id()).size());
-        post.setIsReact(reactService.getReactStatus(post.getPost_id(),post.getUser().getId()));
-        post.setUserFirstName(post.getUser().getName());
-        post.setUserImage(post.getUser().getPic());
+        post.setNumberOfReacts(reactRepository.countByRidPid(post.getId()));
+        post.setNumberOfComments(commentRepository.findByPid(post.getId()).size());
+        post.setIsReact(reactService.getReactStatus(post.getId(),loggedUser));
+        post.setImage(HelperFunctions.getBase64(post.getId(), "posts"));
+
+//        post.setUserFirstName(post.getUser().getName());
+//        post.setUserImage(post.getUser().getPic());
         return post;
     }
 
@@ -126,20 +148,45 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findById(userID).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
         });
-
-        newPost.setCreate_time(Date.from(Instant.now()));
-        if((Objects.isNull(targetPost.getSharedPost()))){
-            newPost.setSharedPost(targetPost);
+        String image64 ="";
+        newPost.setCreate_at(Date.from(Instant.now()));
+        if((Objects.isNull(targetPost.getShared_post()))){
+            newPost.setShared_post(targetPost);
+            image64 = HelperFunctions.getBase64(targetPost.getId(),"posts" );
         }
         else{
-            newPost.setSharedPost(targetPost.getSharedPost());
+            newPost.setShared_post(targetPost.getShared_post());
+            image64 = HelperFunctions.getBase64(targetPost.getShared_post().getId(),"posts" );
         }
         newPost.setUser(user);
-        newPost.setUserFirstName(newPost.getUser().getName());
-        newPost.setUserImage(newPost.getUser().getPic());
+
 
 //        newPost.setSharedPostID(newPost.getSharedPost().getPost_id());
-        postRepository.save(newPost);
+        newPost = postRepository.save(newPost);
+        newPost.getShared_post().setImage(image64);
+        newPost.getUser().setPic(HelperFunctions.getBase64(newPost.getUser().getId(),"users"));
+        newPost.getShared_post().getUser().setPic(HelperFunctions.getBase64(newPost.getShared_post().getUser().getId(),"users"));
+
+
         return newPost;
+    }
+
+    @Override
+    public List<Post> getPostByUser(int posterID,int loggedUser) {
+
+        List<Post> posts= postRepository.findByUserID(posterID);
+        posts.forEach(p ->{
+            p.setNumberOfReacts(reactRepository.countByRidPid(p.getId()));
+            p.setNumberOfComments(commentRepository.findByPid(p.getId()).size());
+            p.setIsReact(reactService.getReactStatus(p.getId(),loggedUser));
+            p.setImage(HelperFunctions.getBase64(p.getId(), "posts"));
+            p.getUser().setPic(HelperFunctions.getBase64(p.getUser().getId(),"users"));
+
+
+//            p.setUserFirstName(p.getUser().getName());
+//            p.setUserImage(p.getUser().getPic());
+
+        });
+        return posts;
     }
 }

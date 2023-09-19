@@ -2,34 +2,49 @@ package com.Blog.Project.Blog.controller;
 
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.Post;
+import com.Blog.Project.Blog.response.GeneralResponse;
 import com.Blog.Project.Blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping({"/api/post"})
+@RequestMapping({"/api"})
 public class PostController {
 
 
     @Autowired
     PostService postService;
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllPosts(){
-        return new ResponseEntity<>(postService.getPosts(), HttpStatus.OK);
+    @GetMapping("/all-posts/{loggedUser}")
+    public GeneralResponse<List<Post>> getAllPosts(@PathVariable("loggedUser") Integer loggedUser){
+        GeneralResponse<List<Post>> res = new GeneralResponse<>();
+        res.setData(postService.getPosts(loggedUser));
+        res.setSuccess(true);
+        return res;
+
     }
 
-    @GetMapping("/{idPost}")
-    public ResponseEntity<?> getPost(@PathVariable("idPost") Integer id) throws GeneralException {
-        return new ResponseEntity<>( postService.getPost(id), HttpStatus.OK);
+    @GetMapping("/get-details/{posterId}/{loggedUser}")
+    public GeneralResponse<?> getPost(@PathVariable("posterId") Integer posterID,@PathVariable("loggedUser") Integer loggedUser) throws GeneralException {
+        GeneralResponse<Post> res = new GeneralResponse<>();
+        res.setData(postService.getPost(posterID,loggedUser));
+        res.setSuccess(true);
+        return res;
+    }
+
+    @GetMapping("posts/{posterId}/{loggedUser}")
+    public GeneralResponse<?> getPostByUser(@PathVariable("posterId") Integer posterId,@PathVariable("loggedUser") Integer loggedUser) throws GeneralException {
+        GeneralResponse<List<Post>> res = new GeneralResponse<>();
+        res.setData (postService.getPostByUser(posterId,loggedUser));
+        res.setSuccess(true);
+        return res;
+
+
     }
 
     @GetMapping("/page/{offset}/{pageSize}")

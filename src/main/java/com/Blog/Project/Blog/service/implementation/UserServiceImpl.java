@@ -1,5 +1,6 @@
 package com.Blog.Project.Blog.service.implementation;
 
+import com.Blog.Project.Blog.Helpers.HelperFunctions;
 import com.Blog.Project.Blog.exceptions.ErrorCode;
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
@@ -7,13 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.Blog.Project.Blog.service.UserService;
 import com.Blog.Project.Blog.repository.UserRepository;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+
 
 
     @Override
@@ -32,9 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String update_image(Integer id,String img) throws GeneralException {
         User user = getUser(id);
-        user.setPic(img);
+//        User user = userRepository.findById(id).get();
+        user.setPic(HelperFunctions.setBase64(id,img,"users"));
         userRepository.save(user);
-        return user.getPic();
+
+        return img;
     }
 
     @Override
@@ -54,11 +66,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+
+
     @Override
     public User getUser(Integer id) throws GeneralException {
         User user =  userRepository.findById(id).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
         });
+        user.setPic(HelperFunctions.getBase64(id,"users"));
         return  user;
     }
 
