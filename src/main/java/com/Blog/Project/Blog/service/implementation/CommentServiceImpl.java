@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment EditComment(int pid,int uid, Comment comment) throws GeneralException{
         try {
             Comment oldComment = commentRepository.getReferenceById(comment.getCid());
-            if (uid != ADMIN && oldComment.getUserId() != uid) {
+            if (uid != ADMIN && oldComment.getUser().getId() != uid) {
                 throw new GeneralException(ErrorCode.ACCESS_DENIED, "You cannot edit a comment that is not done by you");
             }
             commentRepository.save(comment);
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(comment_id).orElseThrow(() -> {
             return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no Comment with this ID");
         });
-            if (uid != ADMIN && uid != comment.getUserId()) {
+            if (uid != ADMIN && uid != comment.getUser().getId()) {
                 throw new GeneralException(ErrorCode.ACCESS_DENIED, "You cannot delete a comment that is not done by you");
             }
             commentRepository.deleteById(comment_id);

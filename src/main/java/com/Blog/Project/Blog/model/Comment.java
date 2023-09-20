@@ -16,15 +16,18 @@ import java.util.Date;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     @Column(name = "cid")
     int cid;
     @Column(name = "pid")
     int postId;
-    @Column(name = "uid")
-    int userId;
+//    @Column(name = "uid")
+//    int userId;
     @Column(name = "content")
     String content;
     @Column(name = "create_time")
     Date commentDate;
+    @ManyToOne
+    @JoinColumn(name = "uid")
+    User user;
+
 }

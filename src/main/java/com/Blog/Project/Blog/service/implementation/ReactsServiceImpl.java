@@ -36,8 +36,8 @@ public class ReactsServiceImpl implements ReactService {
     }
 
     @Override
-    public React addReact(int uid,React react){
-        react.setUid(uid);
+    public React addReact(React react){
+//        react.setUid(uid);
         return reactRepository.save(react);
     }
 
@@ -46,11 +46,10 @@ public class ReactsServiceImpl implements ReactService {
         reactRepository.deleteById(new React.CompositeKey(uid,pid));
     }
     @Override
-    public React editReact(React react,int pid,int uid) throws GeneralException {
+    public React editReact(React react,int uid) throws GeneralException {
         try {
-            React oldReact = reactRepository.getReferenceByUidAndPid(uid, pid);
+            React oldReact = reactRepository.getReferenceByUidAndPid(uid, react.getPid());
             react.setUid(uid);
-            react.setPid(pid);
             reactRepository.saveAndFlush(react);
         } catch (EntityNotFoundException var4) {
             throw new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no React with that ID");

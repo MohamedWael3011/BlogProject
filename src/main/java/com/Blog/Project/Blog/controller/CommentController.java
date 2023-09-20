@@ -19,9 +19,9 @@ public class CommentController {
     CommentService commentService;
 
     @GetMapping("all-comment/{idPost}")
-    public GeneralResponse<List<Comment>> getComments(@PathVariable("idPost") Integer id) {
+    public GeneralResponse<List<Comment>> getComments(@PathVariable("idPost") Integer pid) {
         GeneralResponse<List<Comment>> res = new GeneralResponse<List<Comment>>();
-        res.setData(commentService.ListComment(id));
+        res.setData(commentService.ListComment(pid));
         res.setSuccess(true);
         return res;
     }
@@ -40,25 +40,26 @@ public class CommentController {
         commentService.DeleteComment(uid,cid);
         GeneralResponse<Comment> res = new GeneralResponse<>();
         res.setMessage("Comment has been deleted");
+        res.setSuccess(true);
         return res;
     }
 
     @PutMapping("edit-comment/{idPost}")
     public GeneralResponse<?> editComment(@PathVariable("idPost") Integer pid,@RequestBody Comment comment) throws GeneralException{
         GeneralResponse<Comment> res = new GeneralResponse<>();
-        int uid = comment.getUserId();
+        int uid = comment.getUser().getId();
         res.setData(commentService.EditComment(pid,uid,comment));
         res.setSuccess(true);
         return res;
     }
 
-//    @GetMapping("all-comment/all")
-//    public GeneralResponse<List<Comment>> getAllComments() {
-//        GeneralResponse<List<Comment>> res = new GeneralResponse<List<Comment>>();
-//        res.setData(commentService.ListAllComment());
-//        res.setSuccess(true);
-//        return res;
-//    }
+    @GetMapping("all-comment/all")
+    public GeneralResponse<List<Comment>> getAllComments() {
+        GeneralResponse<List<Comment>> res = new GeneralResponse<List<Comment>>();
+        res.setData(commentService.ListAllComment());
+        res.setSuccess(true);
+        return res;
+    }
 
 //    @GetMapping("all-comment/{idPost}/{offset}/{pageSize}")
 //    public ResponseEntity<?> getCommentsWithPage(@PathVariable("idPost") Integer pid, @PathVariable("offset") Integer offset,@PathVariable("pageSize") Integer pagesize) throws GeneralException {

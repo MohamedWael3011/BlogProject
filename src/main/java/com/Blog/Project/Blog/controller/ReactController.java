@@ -36,15 +36,16 @@ public class ReactController {
     @PostMapping("add-react/{uid}")
     public GeneralResponse<?> addReact(@RequestBody React react,@PathVariable("uid") Integer uid){
         GeneralResponse<React> res = new GeneralResponse<>();
-        res.setData(reactService.addReact(uid,react));
+        react.setUid(uid);
+        res.setData(reactService.addReact(react));
         res.setSuccess(true);
         return res;
     }
 
-    @PutMapping("update-react/{pid}/{uid}")
-    public GeneralResponse<?> editReact(@RequestBody React react,@PathVariable("pid") Integer pid,@PathVariable("uid") Integer uid) throws GeneralException {
+    @PutMapping("update-react/{uid}")
+    public GeneralResponse<?> editReact(@RequestBody React react,@PathVariable("uid") Integer uid) throws GeneralException {
         GeneralResponse<React> res = new GeneralResponse<>();
-        res.setData(reactService.editReact(react,pid,uid));
+        res.setData(reactService.editReact(react,uid));
         res.setSuccess(true);
         return res;
     }
