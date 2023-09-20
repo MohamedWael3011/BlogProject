@@ -1,5 +1,6 @@
 package com.Blog.Project.Blog.service.implementation;
 
+import com.Blog.Project.Blog.Helpers.Hashing;
 import com.Blog.Project.Blog.Helpers.HelperFunctions;
 import com.Blog.Project.Blog.exceptions.ErrorCode;
 import com.Blog.Project.Blog.exceptions.GeneralException;
@@ -14,9 +15,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+
+import static com.Blog.Project.Blog.Helpers.Hashing.getSHA;
+import static com.Blog.Project.Blog.Helpers.Hashing.toHexString;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,14 +32,20 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User register(User u) {
-        return userRepository.save(u);
+    public User register(User u) throws NoSuchAlgorithmException {
+        String Password = u.getPassword();
+        u.setPassword(Hashing.toHexString(Hashing.getSHA(u.getPassword())));
+        u = userRepository.save(u);
+        HelperFunctions.setBase64(u.getId(),u.getPic(),"users");
+        u.setPassword(Password);
+         return u;
     }
 
     @Override
-    public User login(User u) throws GeneralException {
-        User valid = userRepository.findByEmailAndPassword(u.getEmail(),u.getPassword()).orElseThrow(() -> {
-            return new GeneralException(ErrorCode.DO_NOT_EXIST,"There is no User with this ID");
+    public User login(User u) throws GeneralException, NoSuchAlgorithmException {
+        String hashedPw = Hashing.toHexString(Hashing.getSHA(u.getPassword()));
+        User valid = userRepository.findByEmailAndPassword(u.getEmail(),hashedPw).orElseThrow(() -> {
+            return new GeneralException(ErrorCode.DO_NOT_EXIST,"Invalid Email or Password");
         });
         return userRepository.getReferenceById(valid.getId());
     }
@@ -56,9 +67,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User u,int id) throws GeneralException {
-        User user = getUser(id);
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            return new GeneralException(ErrorCode.DO_NOT_EXIST,"Invalid Email or Password");
+        });
         u.setId(id);
-        return userRepository.saveAndFlush(u);
+        u.setPassword(user.getPassword());
+        u.setPic(user.getPic());
+        userRepository.saveAndFlush(u);
+        u.setPic(HelperFunctions.getBase64(u.getId(),"users"));
+        return u;
     }
 
     @Override
@@ -83,6 +100,7 @@ public class UserServiceImpl implements UserService {
         User u2 = userRepository.findById(id2).get();
         u1.getFriends().add(u2);
         u2.getFriends().add(u1);
+        userRepository.saveAndFlush(u2);
         return userRepository.save(u1);
     }
 
@@ -92,12 +110,18 @@ public class UserServiceImpl implements UserService {
         User u2 = userRepository.findById(id2).get();
         u1.getFriends().remove(u2);
         u2.getFriends().remove(u1);
+        userRepository.saveAndFlush(u1);
+        userRepository.saveAndFlush(u2);
     }
 
     @Override
     public Set<User> getFriends(int uid) throws GeneralException {
         User u = getUser(uid);
-        return u.getFriends();
+        Set<User> friends = u.getFriends();
+        friends.forEach(f ->{
+            f.setPic(HelperFunctions.getBase64(f.getId(),"users"));
+        });
+        return friends;
     }
 
     @Override

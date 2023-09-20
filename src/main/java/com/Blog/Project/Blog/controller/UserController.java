@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -24,12 +25,12 @@ public class UserController {
     PostService postService;
 
     @PostMapping("/user/add-user")
-    public ResponseEntity<?> register(@RequestBody User u){
+    public ResponseEntity<?> register(@RequestBody User u) throws NoSuchAlgorithmException {
         return  new ResponseEntity<>(userService.register(u),HttpStatus.OK);
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<?> login(@RequestBody User user) throws GeneralException {
+    public ResponseEntity<?> login(@RequestBody User user) throws GeneralException, NoSuchAlgorithmException {
         return  new ResponseEntity<>(userService.login(user),HttpStatus.OK);
     }
     @PutMapping("/user/update-user/{id}")
@@ -37,10 +38,10 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(u,id),HttpStatus.OK);
     }
 
-    @PutMapping("/user/upload-image/{id}")
+    @PostMapping("/user/upload-image/{id}")
     public Object updateimage(@PathVariable("id") Integer i,@RequestBody HashMap<String, String> img) throws GeneralException {
         HashMap<String,String> image = new HashMap<>();
-        image.put("img", userService.update_image(i,img.get("img")));
+        image.put("image", userService.update_image(i,img.get("image")));
         return image;
     }
 

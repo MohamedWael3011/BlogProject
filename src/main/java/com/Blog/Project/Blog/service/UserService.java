@@ -4,12 +4,13 @@ package com.Blog.Project.Blog.service;
 import com.Blog.Project.Blog.exceptions.GeneralException;
 import com.Blog.Project.Blog.model.User;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
 
 public interface UserService {
-    User register (User u);
-    User login(User u) throws GeneralException;
+    User register (User u) throws NoSuchAlgorithmException;
+    User login(User u) throws GeneralException, NoSuchAlgorithmException;
     String update_image(Integer id, String img) throws GeneralException;
     void deleteUser(Integer id);
 
